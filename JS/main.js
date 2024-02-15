@@ -1,5 +1,11 @@
 var app = angular.module('myApp', ['ngRoute']);
 
+
+//rootScope
+app.run(function ($rootScope) {
+  $rootScope.isLogin = false;
+});
+
 app.config(function ($routeProvider) {
   $routeProvider
     .when('/', {
@@ -83,17 +89,21 @@ app.controller('listController', function ($scope, $http) {
 });
 
 
+
 // Định nghĩa controller 'loginController'
-app.controller('loginController', function ($scope, $location) {
+app.controller('loginController', function ($scope, $location, $rootScope) {
   // Hàm xử lý submit form đăng nhập
+
   $scope.login = function () {
     // Kiểm tra xác thực tại đây, ví dụ:
+
     var email = $scope.emailForLogin;
     var password = $scope.passwordForLogin;
     // Kiểm tra điều kiện đăng nhập (Ví dụ đơn giản)
     if (email === 'admin@gmail.com' && password === 'admin123') {
-      localStorage.setItem("isLogin", true);
-      toggleProfile(); // Hiển thị phần profile
+      // Nếu thông tin đăng nhập chính xác, chuyển hướng đến trang chủ
+      $rootScope.isLogin = true;
+      alert('Đăng nhập thành công');
       $location.path('/');
     }
     else {
@@ -101,6 +111,9 @@ app.controller('loginController', function ($scope, $location) {
       alert('Email hoặc mật khẩu không chính xác');
     }
   };
+
+
+
 });
 
 
@@ -111,6 +124,21 @@ function isValidPhoneNumber(phoneNumber) {
   // Kiểm tra có đúng 10 số không
   return phoneNumber.length === 10;
 }
+
+function toggleProfile() {
+  var profileElement = document.querySelector('.profile');
+  var profileImage = document.querySelector('.profile img');
+
+  if (profileElement.classList.contains('profile-hidden')) {
+    profileElement.classList.remove('profile-hidden');
+    profileImage.style.display = 'inline-block';
+  } else {
+    profileElement.classList.add('profile-hidden');
+    profileImage.style.display = 'none';
+  }
+}
+
+
 
 // app.controller("listController", function ($scope, $http) {
 //   $scope.hienThiSanPham = [];
